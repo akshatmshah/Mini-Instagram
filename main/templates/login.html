@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+<title> Login Page </title>
+<style>
+
+</style>
+</head>
+<body>
+    <div style="text-align: center;"> <h1> Mini Instagram </h1> </div>
+            <form method = "POST">
+        <div class="container">
+            <br>
+             {% csrf_token %}
+             {{ form.as_p }}
+            <button type="submit">
+                Login</button>
+            <br>
+            <br>
+            Forgot <a href="#"> password? </a>
+        </div>
+    </form>
+    Don't have an account? <a href="/register.html" target="blank"><strong>register here</strong></a>!
+</body>
+</html>
