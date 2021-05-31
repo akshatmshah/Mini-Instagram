@@ -26,9 +26,13 @@ def login_request(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect("insta:user_profile")
+            username = User.objects.get(username=request.user)
+            # return redirect("insta:profile")
+            # return HttpResponseRedirect(reverse('insta:profile', kwargs={'id': username.id}))
+
             # return HttpResponseRedirect(reverse('insta:user_profile',
             #                                     kwargs={'username': username}))
+            return HttpResponseRedirect('/%s/' % username.id)
         else:
             form = AuthenticationForm(request.POST)
             return render(request, 'login.html', {'form': form})
@@ -41,12 +45,14 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            profile = Profile(user=user)
+
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            return render(request, 'profile.html', {'form': form})
+            return render(request, 'login.html', {'form': form})
         else:
             return render(request, 'register.html', {'form': form})
     else:
@@ -60,5 +66,5 @@ def homepage(request):
 
 def get_user_profile(request, username):
     user = get_object_or_404(User, pk=username)
-    profile = Profile.objects.get(user=user)
-    return render(request, "profile.html", {"profile": profile})
+    prof = Profile.objects.get_or_create(user=user)
+    return render(request, "profile.html", {"profile": prof})

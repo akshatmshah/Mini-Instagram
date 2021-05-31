@@ -10,6 +10,6 @@ urlpatterns = [
     path("register.html/", views.register, name='register'),
     # path("create_post.html", views.create_post, name="create"),
     path("", views.homepage, name="homepage"),
-    path('<int:username>/', views.get_user_profile, name="user_profile"),
+    path('<int:username>/', views.get_user_profile, name="profile"),
     # path("home.html/", views.feed, name="feed")
 ]
