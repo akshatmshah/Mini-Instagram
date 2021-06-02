@@ -5,9 +5,6 @@
 {% block content %}
     <div class="login-container">
         <h1>Register</h1>
-        {% if messages %}
-            <h2>{{ messages.info }}</h2>
-        {% endif %}
         <form method="POST">
             {% csrf_token %}
             {% for field in form  %}

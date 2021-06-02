@@ -4,14 +4,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
-from django.urls import reverse
 from django.http import HttpResponseRedirect
-from .models import Profile
+from .models import Profile, Post
+from django.views import generic
+from django.utils import timezone
+from .forms import Post as PostForm
 
 
 def logout_request(request):
     logout(request)
-    messages.info(request, "Logged out!")
     return redirect("insta:homepage")
 
 
@@ -27,11 +28,6 @@ def login_request(request):
         if user is not None:
             login(request, user)
             username = User.objects.get(username=request.user)
-            # return redirect("insta:profile")
-            # return HttpResponseRedirect(reverse('insta:profile', kwargs={'id': username.id}))
-
-            # return HttpResponseRedirect(reverse('insta:user_profile',
-            #                                     kwargs={'username': username}))
             return HttpResponseRedirect('/%s/' % username.id)
         else:
             form = AuthenticationForm(request.POST)
@@ -45,14 +41,14 @@ def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            profile = Profile(user=user)
-
+            form.save()
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            return render(request, 'login.html', {'form': form})
+            print(username)
+            print(password)
+            return redirect("insta:login")
         else:
             return render(request, 'register.html', {'form': form})
     else:
@@ -68,3 +64,32 @@ def get_user_profile(request, username):
     user = get_object_or_404(User, pk=username)
     prof = Profile.objects.get_or_create(user=user)
     return render(request, "profile.html", {"profile": prof})
+
+
+# POSTS
+class Feed(generic.ListView):
+    template_name = 'base.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Post.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')
+
+
+def create_post(request):
+    form = PostForm
+    if request.method == 'POST':
+        postf = PostForm(request.POST)
+        if postf.is_valid():
+            profile = postf.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            return redirect('insta:feed')
+    return render(request, 'create.html', {'form': form})
+
+
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id, user=request.user)
+    post.delete()
+    return redirect("insta:feed")

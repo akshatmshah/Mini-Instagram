@@ -12,8 +12,15 @@
         <div class="container">
             <br>
              {% csrf_token %}
-             {{ form.as_p }}
-{#             {{ username.id }}#}
+             {% for field in form  %}
+                <div class="field">
+                    {{ field.label_tag }}
+                    <br>
+                    {{ field }}
+                    <br>
+                    <br>
+                </div>
+            {% endfor %}
             <button type="submit">
                 Login</button>
             <br>
