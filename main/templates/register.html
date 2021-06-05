@@ -3,25 +3,20 @@
 {% endblock %}
 
 {% block content %}
-    <div class="login-container">
+    <div class="main-container">
         <h1>Register</h1>
         <form method="POST">
             {% csrf_token %}
-            {% for field in form  %}
-                <div class="field">
-                    {{ field.label_tag }}
-                    <br>
-                    {{ field }}
-                    <br>
-                    <br>
-                </div>
-            {% endfor %}
-            <button class="btn" type="submit">Register</button>
+           <table>
+                {{ form.as_table }}
+                 <tr>
+                    <td></td>
+                    <td><input type="submit" name="submit" value="Register" /></td>
+                </tr>
+             </table>
         </form>
         <div class="inner-container">
             <p>Already have an account? <a href="/login.html"><strong>Login</strong></a> here.</p>
         </div>
-
     </div>
-
 {% endblock %}

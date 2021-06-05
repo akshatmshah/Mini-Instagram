@@ -4,7 +4,6 @@ from . import views
 app_name = "insta"
 
 urlpatterns = [
-    # path('', views.IndexView.as_view(), name='index'),
     path("logout.html/", views.logout_request, name="logout"),
     path("login.html/", views.login_request, name="login"),
     path("register.html/", views.register, name='register'),
