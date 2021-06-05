@@ -81,7 +81,7 @@ def create_post(request):
             profile.user = request.user
             profile.save()
             return redirect('insta:feed')
-    return render(request, 'create.html', {'form': form})
+    return render(request, 'posts.html', {'form': form})
 
 
 def delete_post(request, post_id):
