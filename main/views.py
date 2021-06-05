@@ -46,8 +46,6 @@ def register(request):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            print(username)
-            print(password)
             return redirect("insta:login")
         else:
             return render(request, 'register.html', {'form': form})
@@ -66,15 +64,12 @@ def get_user_profile(request, username):
     return render(request, "profile.html", {"profile": prof})
 
 
-# POSTS
 class Feed(generic.ListView):
     template_name = 'base.html'
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Post.objects.filter(
-            pub_date__lte=timezone.now()
-        ).order_by('-pub_date')
+        return Post.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')
 
 
 def create_post(request):
