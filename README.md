@@ -1,1 +1,1 @@
-# Mini-Instagram
+# Django Mini-Instagram
